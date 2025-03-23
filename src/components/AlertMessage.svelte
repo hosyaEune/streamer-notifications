@@ -2,7 +2,7 @@
     import { fade, fly } from 'svelte/transition';
     import type { Alert } from '../types/index';
     import { onMount } from 'svelte';
-    import { audioManager } from '../core/AudioManager';
+    import { AudioManager } from '../core/AudioManager';
 
     export let alert: Alert;
     
@@ -13,15 +13,17 @@
     } ;
 
     onMount(() => {
-    if (alert.soundPath) {
-      audioManager.playSound(alert.soundPath).then(() => {
-        if (alert.type === 'donation') {
-          audioManager.playSound(alert.voicePath).then(() => {
-            console.log('Voice played');
-          });
+        const audioManager = AudioManager.getInstance();
+
+        if (alert.soundPath) {
+        audioManager.playSound(alert.soundPath).then(() => {
+            if (alert.type === 'donation') {
+            audioManager.playSound(alert.voicePath).then(() => {
+                console.log('Voice played');
+            });
+            }
+        });
         }
-      });
-    }
   });
 </script>
 

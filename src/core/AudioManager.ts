@@ -1,4 +1,4 @@
-class AudioManager {
+export class AudioManager {
   private static instance: AudioManager;
   private context: AudioContext;
   private gainNode: GainNode;
@@ -76,5 +76,3 @@ class AudioManager {
     this.gainNode.gain.value = value;
   }
 }
-
-export const audioManager = AudioManager.getInstance();

@@ -5,7 +5,7 @@
   import type { Notification } from '../types/index';
   import { NotificationFacade } from '../notification-providers/NotificationFacade';
   import { DonatePayProvider } from '../notification-providers/DonatePay/index';
-  // import AlertMessage from '../components/AlertMessage.svelte';
+  import AlertMessage from '../components/AlertMessage.svelte';
 
   const providerMap = {
     donatePay: DonatePayProvider
@@ -73,6 +73,6 @@
 </script>
 
 <div>hello</div>
-<!-- {#if alert}
+{#if alert}
   <AlertMessage alert={{...alert, type: 'donation'}} />
-{/if} -->
+{/if}

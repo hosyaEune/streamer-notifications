@@ -1,6 +1,5 @@
 import type { Notification, NotificationSettings } from "../../types";
 import { CentrifugeProvider } from "../CentrifugeProvider";
-// import { responseSettings } from "./mock";
 import type { DonatePayNotification, SettingsNotification } from "./types";
 
 export class DonatePayProvider extends CentrifugeProvider {
@@ -80,36 +79,32 @@ export class DonatePayProvider extends CentrifugeProvider {
     }
   }
 
-  protected async getSocketToken() {
-    var res = await fetch("https://donatepay.ru/api/v2/socket/token", {
-      method: "post",
+  protected async getSocketToken(): Promise<string> {
+    const res = await fetch("/api/donatepay/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         access_token: this.accessToken,
       }),
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-      },
     });
 
-    return (await res.json()).token;
+    const data = await res.json();
+    return data.token;
   }
 
   private async _getNotificationSettings(
     widgetTokens: string[]
   ): Promise<NotificationSettings[]> {
     const getSettings = async (widgetToken: string) => {
-      return fetch(
-        `https://widget.donatepay.ru/alert-box/all-settings/${widgetToken}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
-          },
-        }
-      ).then((res) => res.json() as Promise<SettingsNotification>);
-      //   return responseSettings as unknown as SettingsNotification;
+      return fetch(`/api/donatepay/settings`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          widgetToken,
+        }),
+      }).then((res) => res.json() as Promise<SettingsNotification>);
     };
 
     const getSettingFetchers = widgetTokens.map(getSettings);
