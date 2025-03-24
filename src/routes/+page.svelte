@@ -71,8 +71,7 @@
 
 
 </script>
-
-<div>hello</div>
+<button>hello</button>
 {#if alert}
   <AlertMessage alert={{...alert, type: 'donation'}} />
 {/if}

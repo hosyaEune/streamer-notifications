@@ -16,13 +16,15 @@
         const audioManager = AudioManager.getInstance();
 
         if (alert.soundPath) {
-        audioManager.playSound(alert.soundPath).then(() => {
-            if (alert.type === 'donation') {
-            audioManager.playSound(alert.voicePath).then(() => {
-                console.log('Voice played');
+            console.log('zdec 1')
+            audioManager.playSound(alert.soundPath).then(() => {
+                console.log('zdec 2')
+                if (alert.type === 'donation') {
+                audioManager.playSound(alert.voicePath).then(() => {
+                    console.log('Voice played');
+                });
+                }
             });
-            }
-        });
         }
   });
 </script>

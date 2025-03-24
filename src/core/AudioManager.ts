@@ -26,36 +26,38 @@ export class AudioManager {
   }
 
   playSound(url: string): Promise<void> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let buffer = this.soundCache.get(url);
+    return new Promise((resolve, reject) => {
+      (async () => {
+        try {
+          let buffer = this.soundCache.get(url);
 
-        if (!buffer) {
-          buffer = await this.loadSound(url);
-          this.soundCache.set(url, buffer);
+          if (!buffer) {
+            buffer = await this.loadSound(url);
+            this.soundCache.set(url, buffer);
+          }
+
+          // Останавливаем текущий звук, если он есть
+          if (this.currentSource) {
+            this.currentSource.stop();
+          }
+
+          const source = this.context.createBufferSource();
+          this.currentSource = source;
+          source.buffer = buffer;
+          source.connect(this.gainNode);
+
+          // Отслеживаем окончание воспроизведения
+          source.onended = () => {
+            this.currentSource = null;
+            resolve();
+          };
+
+          source.start(0);
+        } catch (error) {
+          console.error("Failed to play sound:", error);
+          reject(error);
         }
-
-        // Останавливаем текущий звук, если он есть
-        if (this.currentSource) {
-          this.currentSource.stop();
-        }
-
-        const source = this.context.createBufferSource();
-        this.currentSource = source;
-        source.buffer = buffer;
-        source.connect(this.gainNode);
-
-        // Отслеживаем окончание воспроизведения
-        source.onended = () => {
-          this.currentSource = null;
-          resolve();
-        };
-
-        source.start(0);
-      } catch (error) {
-        console.error("Failed to play sound:", error);
-        reject(error);
-      }
+      })();
     });
   }
 

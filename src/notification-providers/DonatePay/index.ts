@@ -32,14 +32,14 @@ export class DonatePayProvider extends CentrifugeProvider {
   }
 
   private _createVoicePath(widgetToken: string) {
-    const url = `https://widget.donatepay.ru/donation/notifications/widget/${widgetToken}`;
+    const url = `/api/donatepay/voice?widgetToken=${widgetToken}`;
 
     return (message: string, widgetId: string) =>
-      `${url}/voice?text=${message}&rate=medium&widget_id=${widgetId}`;
+      `${url}&text=${message}&rate=medium&widget_id=${widgetId}`;
   }
 
   private _createSoundPath(path: string): string {
-    return `https://widget.donatepay.ru/uploads/notification/sounds/${path}`;
+    return `/api/sounds?path=${path}`;
   }
 
   private _createImagePath(path: string): string {
@@ -96,14 +96,11 @@ export class DonatePayProvider extends CentrifugeProvider {
     widgetTokens: string[]
   ): Promise<NotificationSettings[]> {
     const getSettings = async (widgetToken: string) => {
-      return fetch(`/api/donatepay/settings`, {
-        method: "POST",
+      return fetch(`/api/donatepay/settings?widgetToken=${widgetToken}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          widgetToken,
-        }),
       }).then((res) => res.json() as Promise<SettingsNotification>);
     };
 
